@@ -106,7 +106,7 @@ export default function DynamicCalendarPage() {
             newBlocked = { ...blockedDatesByMonth, [monthKey]: blocked };
         }
 
-        // ✅ Print both formats to console
+        // Print both formats to console
         setTimeout(() => {
             const currentData = {
                 availableDatesByMonth: newAvailable,
@@ -115,10 +115,10 @@ export default function DynamicCalendarPage() {
 
             console.clear();
 
-            // 1️⃣ Pretty JSON format like your example
+            // Pretty JSON format like your example
             console.log(`"Dateinfo": ${JSON.stringify(currentData, null, 2)}`);
 
-            // 2️⃣ Object format (usable form)
+            //  Object format (usable form)
             console.log({
                 Dateinfo: currentData,
             });
@@ -173,124 +173,137 @@ export default function DynamicCalendarPage() {
     const blockedForThisMonth = blockedDatesByMonth[monthKey] || [];
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-start justify-center p-6">
-            <div className="w-full max-w-3xl bg-white rounded-2xl shadow p-6">
-                {/* Header */}
-                <div className="flex items-center justify-between gap-4 mb-4">
-                    <div className="flex items-center gap-2">
-                        <select
-                            className="border px-3 py-2 rounded"
-                            value={viewMonth}
-                            onChange={(e) => setViewMonth(Number(e.target.value))}
-                        >
-                            {months.map((m, i) => (
-                                <option key={m} value={i}>
-                                    {m}
-                                </option>
-                            ))}
-                        </select>
-                        <select
-                            className="border px-3 py-2 rounded"
-                            value={viewYear}
-                            onChange={(e) => setViewYear(Number(e.target.value))}
-                        >
-                            {yearOptions.map((y) => (
-                                <option key={y} value={y}>
-                                    {y}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+        <div className="min-h-screen py-5">
+            <div className="uppercase text-center text-4xl font-semibold">Calender</div>
+            <div className=" bg-gray-50 flex items-start justify-center p-6">
 
-                    <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="radio"
-                                checked={mode === "allow"}
-                                onChange={() => setMode("allow")}
-                            />
-                            <span>Allow Booking</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="radio"
-                                checked={mode === "block"}
-                                onChange={() => setMode("block")}
-                            />
-                            <span>Don't Allow Booking</span>
-                        </label>
-                    </div>
-                </div>
+                <div className="w-full max-w-xl bg-white rounded-sm shadow border border-zinc-500 p-6">
+                    {/* Header */}
 
-                {/* Input */}
-                <div className="flex gap-2 mb-4">
-                    <input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder={`Enter comma-separated days for ${months[viewMonth]} ${viewYear} (e.g. 1,2,6)`}
-                        className="flex-1 border px-3 py-2 rounded"
-                    />
-                    <button
-                        onClick={applyInput}
-                        className="px-4 py-2 rounded bg-blue-600 text-white"
-                    >
-                        Apply
-                    </button>
-                    <button
-                        onClick={() => {
-                            setAvailableDatesByMonth({});
-                            setBlockedDatesByMonth({});
-                            localStorage.removeItem("availableDatesByMonth");
-                            localStorage.removeItem("blockedDatesByMonth");
-                            console.clear();
-                        }}
-                        className="px-3 py-2 rounded border"
-                    >
-                        Clear All
-                    </button>
-                </div>
-
-                {/* Week headers */}
-                <div className="grid grid-cols-7 text-center font-medium text-sm text-gray-600">
-                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-                        <div key={d} className="py-2">
-                            {d}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Calendar grid */}
-                <div className="grid grid-cols-7 gap-2 mt-2">
-                    {Array.from({ length: offset }).map((_, i) => (
-                        <div key={`e-${i}`} className="h-20 border rounded bg-gray-50" />
-                    ))}
-
-                    {daysArray.map((day) => {
-                        const isBlocked = blockedForThisMonth.includes(day);
-                        const highlighted = isDayHighlighted(day);
-                        return (
-                            <button
-                                key={day}
-                                onClick={() => {
-                                    if (!isBlocked) handleAvailableDateClick(day);
-                                }}
-                                disabled={isBlocked}
-                                className={`relative h-20 border rounded p-2 text-left transition-all
-                  ${isBlocked
-                                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                        : "bg-white hover:bg-blue-50"}
-                  ${highlighted ? "ring-2 ring-blue-500" : ""}`}
+                    <div className="flex items-center justify-between gap-4 mb-4">
+                        <div className="flex items-center gap-2">
+                            <select
+                                className=" px-3 py-1 rounded bg-black/20 focus:outline-none focus:ring-0 cursor-pointer"
+                                value={viewMonth}
+                                onChange={(e) => setViewMonth(Number(e.target.value))}
                             >
-                                <div className="text-sm font-medium">{day}</div>
-                                {isBlocked && (
-                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <span className="text-red-500 text-2xl font-bold">✕</span>
-                                    </div>
-                                )}
-                            </button>
-                        );
-                    })}
+                                {months.map((m, i) => (
+                                    <option key={m} value={i}>
+                                        {m}
+                                    </option>
+                                ))}
+                            </select>
+                            <select
+                                className=" px-3 py-1 rounded bg-black/20 focus:outline-none focus:ring-0 cursor-pointer"
+                                value={viewYear}
+                                onChange={(e) => setViewYear(Number(e.target.value))}
+                            >
+                                {yearOptions.map((y) => (
+                                    <option key={y} value={y}>
+                                        {y}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+
+                    </div>
+                    {/* <div className="text-2xl font-semibold text-center py-4 ">Octuber 2025</div> */}
+                    <div className="text-2xl font-semibold text-center py-4">
+                        {months[viewMonth]} {viewYear}
+                    </div>
+
+
+
+                    {/* Week headers */}
+                    <div className="grid grid-cols-7 text-center font-medium text-sm text-gray-600">
+                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+                            <div key={d} className="py-2">
+                                {d}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Calendar grid */}
+                    <div className="grid grid-cols-7 gap-2 mt-2">
+                        {Array.from({ length: offset }).map((_, i) => (
+                            <div key={`e-${i}`} className="h-12 border border-zinc-500 rounded-sm bg-gray-50" />
+                        ))}
+
+                        {daysArray.map((day) => {
+                            const isBlocked = blockedForThisMonth.includes(day);
+                            const highlighted = isDayHighlighted(day);
+                            return (
+                                <button
+                                    key={day}
+                                    onClick={() => {
+                                        if (!isBlocked) handleAvailableDateClick(day);
+                                    }}
+                                    disabled={isBlocked}
+                                    className={`relative h-12 border border-zinc-500 rounded-sm p-2 text-left transition-all
+                  ${isBlocked
+                                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                            : "bg-white hover:bg-blue-50"}
+                  ${highlighted ? "ring-2 ring-blue-500" : ""}`}
+                                >
+                                    <div className="text-md text-center font-medium">{day}</div>
+                                    {isBlocked && (
+                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                            <span className="text-red-500/50 text-2xl font-bold">✕</span>
+                                        </div>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
+
+            </div>
+            <div className=" mx-auto max-w-4xl flex justify-center items-center gap-5 pt-12">
+                <label className="flex items-center gap-2">
+                    <input
+                        type="radio"
+                        checked={mode === "allow"}
+                        onChange={() => setMode("allow")}
+                    />
+                    <span>Allow Booking</span>
+                </label>
+                <label className="flex items-center gap-2">
+                    <input
+                        type="radio"
+                        checked={mode === "block"}
+                        onChange={() => setMode("block")}
+                    />
+                    <span>Don't Allow Booking</span>
+                </label>
+            </div>
+
+            {/* Input */}
+            <div className="flex gap-2 mb-4 mx-auto max-w-4xl py-2 px-16">
+                <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder={`Enter comma-separated days for ${months[viewMonth]} ${viewYear} (e.g. 1,2,6)`}
+                    className="flex-1 border px-3 py-2 rounded"
+                />
+                <button
+                    onClick={applyInput}
+                    className="px-4 py-2 rounded bg-blue-600 text-white"
+                >
+                    Apply
+                </button>
+                <button
+                    onClick={() => {
+                        setAvailableDatesByMonth({});
+                        setBlockedDatesByMonth({});
+                        localStorage.removeItem("availableDatesByMonth");
+                        localStorage.removeItem("blockedDatesByMonth");
+                        console.clear();
+                    }}
+                    className="px-3 py-2 rounded border"
+                >
+                    Clear All
+                </button>
             </div>
         </div>
     );
