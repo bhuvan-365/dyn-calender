@@ -16,7 +16,9 @@ export default function DynamicCalendarPage() {
     const [input, setInput] = useState<string>("");
     const [highlightedRange, setHighlightedRange] = useState<Date[] | null>(null);
 
-    const [availableDatesByMonth, setAvailableDatesByMonth] = useState<Record<string, number[]>>(() => {
+    const [availableDatesByMonth, setAvailableDatesByMonth] = useState<
+        Record<string, number[]>
+    >(() => {
         try {
             const raw = localStorage.getItem("availableDatesByMonth");
             return raw ? JSON.parse(raw) : {};
@@ -24,7 +26,9 @@ export default function DynamicCalendarPage() {
             return {};
         }
     });
-    const [blockedDatesByMonth, setBlockedDatesByMonth] = useState<Record<string, number[]>>(() => {
+    const [blockedDatesByMonth, setBlockedDatesByMonth] = useState<
+        Record<string, number[]>
+    >(() => {
         try {
             const raw = localStorage.getItem("blockedDatesByMonth");
             return raw ? JSON.parse(raw) : {};
@@ -34,10 +38,17 @@ export default function DynamicCalendarPage() {
     });
 
     useEffect(() => {
-        localStorage.setItem("availableDatesByMonth", JSON.stringify(availableDatesByMonth));
+        localStorage.setItem(
+            "availableDatesByMonth",
+            JSON.stringify(availableDatesByMonth)
+        );
     }, [availableDatesByMonth]);
+
     useEffect(() => {
-        localStorage.setItem("blockedDatesByMonth", JSON.stringify(blockedDatesByMonth));
+        localStorage.setItem(
+            "blockedDatesByMonth",
+            JSON.stringify(blockedDatesByMonth)
+        );
     }, [blockedDatesByMonth]);
 
     function daysInMonth(y: number, m: number) {
@@ -48,7 +59,10 @@ export default function DynamicCalendarPage() {
         return new Date(y, m, 1).getDay();
     }
 
-    const monthKey = useMemo(() => monthKeyFromDate(viewYear, viewMonth), [viewYear, viewMonth]);
+    const monthKey = useMemo(
+        () => monthKeyFromDate(viewYear, viewMonth),
+        [viewYear, viewMonth]
+    );
 
     function parseInput(text: string) {
         const validDays = daysInMonth(viewYear, viewMonth);
@@ -64,7 +78,10 @@ export default function DynamicCalendarPage() {
 
     function applyInput() {
         const parsed = parseInput(input);
-        const all = Array.from({ length: daysInMonth(viewYear, viewMonth) }, (_, i) => i + 1);
+        const all = Array.from(
+            { length: daysInMonth(viewYear, viewMonth) },
+            (_, i) => i + 1
+        );
 
         let newAvailable: Record<string, number[]> = {};
         let newBlocked: Record<string, number[]> = {};
@@ -89,15 +106,22 @@ export default function DynamicCalendarPage() {
             newBlocked = { ...blockedDatesByMonth, [monthKey]: blocked };
         }
 
-        // print clean JSON to console
-
+        // ✅ Print both formats to console
         setTimeout(() => {
-            const output = {
+            const currentData = {
                 availableDatesByMonth: newAvailable,
                 blockedDatesByMonth: newBlocked,
             };
+
             console.clear();
-            console.log(JSON.stringify(output, null, 2));
+
+            // 1️⃣ Pretty JSON format like your example
+            console.log(`"Dateinfo": ${JSON.stringify(currentData, null, 2)}`);
+
+            // 2️⃣ Object format (usable form)
+            console.log({
+                Dateinfo: currentData,
+            });
         }, 100);
 
         setInput("");
@@ -122,13 +146,26 @@ export default function DynamicCalendarPage() {
     function isDayHighlighted(day: number) {
         if (!highlightedRange) return false;
         return highlightedRange.some(
-            (d) => d.getFullYear() === viewYear && d.getMonth() === viewMonth && d.getDate() === day
+            (d) =>
+                d.getFullYear() === viewYear &&
+                d.getMonth() === viewMonth &&
+                d.getDate() === day
         );
     }
 
     const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
     ];
     const yearOptions = Array.from({ length: 10 }, (_, i) => today.getFullYear() - 2 + i);
 
@@ -167,11 +204,19 @@ export default function DynamicCalendarPage() {
 
                     <div className="flex items-center gap-3">
                         <label className="flex items-center gap-2">
-                            <input type="radio" checked={mode === "allow"} onChange={() => setMode("allow")} />
+                            <input
+                                type="radio"
+                                checked={mode === "allow"}
+                                onChange={() => setMode("allow")}
+                            />
                             <span>Allow Booking</span>
                         </label>
                         <label className="flex items-center gap-2">
-                            <input type="radio" checked={mode === "block"} onChange={() => setMode("block")} />
+                            <input
+                                type="radio"
+                                checked={mode === "block"}
+                                onChange={() => setMode("block")}
+                            />
                             <span>Don't Allow Booking</span>
                         </label>
                     </div>
@@ -185,7 +230,10 @@ export default function DynamicCalendarPage() {
                         placeholder={`Enter comma-separated days for ${months[viewMonth]} ${viewYear} (e.g. 1,2,6)`}
                         className="flex-1 border px-3 py-2 rounded"
                     />
-                    <button onClick={applyInput} className="px-4 py-2 rounded bg-blue-600 text-white">
+                    <button
+                        onClick={applyInput}
+                        className="px-4 py-2 rounded bg-blue-600 text-white"
+                    >
                         Apply
                     </button>
                     <button
@@ -228,9 +276,10 @@ export default function DynamicCalendarPage() {
                                 }}
                                 disabled={isBlocked}
                                 className={`relative h-20 border rounded p-2 text-left transition-all
-                  ${isBlocked ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white hover:bg-blue-50"}
-                  ${highlighted ? "ring-2 ring-blue-500" : ""}
-                `}
+                  ${isBlocked
+                                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                        : "bg-white hover:bg-blue-50"}
+                  ${highlighted ? "ring-2 ring-blue-500" : ""}`}
                             >
                                 <div className="text-sm font-medium">{day}</div>
                                 {isBlocked && (
